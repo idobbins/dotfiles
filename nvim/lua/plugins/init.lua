@@ -30,6 +30,7 @@ return {
     lazy = false,
     build = ":TSUpdate",
     opts = {
+      sync_install = true,
       ensure_installed = {
         "lua",
         "nix",
