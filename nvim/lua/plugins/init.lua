@@ -11,15 +11,20 @@ return {
   },
 
   {
-    "nvim-telescope/telescope.nvim",
-    version = "*",
-    cmd = "Telescope",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    "dmtrKovalenko/fff.nvim",
+    build = function()
+      require("fff.download").download_or_build_binary()
+    end,
+    lazy = false,
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
+      { "<leader>ff", function() require("fff").find_files() end, desc = "Find files" },
+      { "<leader>fg", function() require("fff").live_grep() end, desc = "Live grep" },
+      {
+        "<leader>fw",
+        function() require("fff").live_grep_under_cursor() end,
+        mode = { "n", "x" },
+        desc = "Search word or selection",
+      },
     },
     opts = {},
   },
@@ -32,6 +37,8 @@ return {
     opts = {
       sync_install = true,
       ensure_installed = {
+        "bash",
+        "javascript",
         "lua",
         "nix",
         "python",
@@ -59,11 +66,15 @@ return {
 
   {
     "neovim/nvim-lspconfig",
-    dependencies = { "saghen/blink.cmp" },
+    dependencies = {
+      "saghen/blink.cmp",
+      { "mason-org/mason.nvim", opts = {} },
+      "mason-org/mason-lspconfig.nvim",
+    },
     config = function()
       local capabilities = require("blink.cmp").get_lsp_capabilities()
       local servers = {
-        nil_ls = {},
+        bashls = {},
         lua_ls = {
           settings = {
             Lua = {
@@ -76,6 +87,11 @@ return {
         pyright = {},
         rust_analyzer = {},
       }
+
+      require("mason-lspconfig").setup({
+        ensure_installed = vim.tbl_keys(servers),
+        automatic_enable = false,
+      })
 
       for name, config in pairs(servers) do
         config.capabilities = capabilities

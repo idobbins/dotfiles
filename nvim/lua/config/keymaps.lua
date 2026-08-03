@@ -1,6 +1,8 @@
 local map = vim.keymap.set
 
 map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Clear search highlight" })
+map("n", "<leader>fb", ":buffers<cr>:buffer ", { desc = "Switch buffer" })
+map("n", "<leader>fh", ":help ", { desc = "Open help" })
 
 map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 map("n", "K", vim.lsp.buf.hover, { desc = "Hover documentation" })

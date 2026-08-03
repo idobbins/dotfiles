@@ -11,7 +11,8 @@ Requirements:
 - Neovim 0.11.7 or newer
 - Git
 - A C compiler for Tree-sitter parsers
-- `ripgrep` for `<leader>fg` live grep
+- `curl`, `unzip`, `tar`, and `gzip` for portable tool installation
+- Node.js for the TypeScript and Python servers (an FNM default is detected)
 
 Clone and link the configuration:
 
@@ -35,22 +36,33 @@ Pull the repository and synchronize plugins in one command:
 ```
 
 Inside Neovim, `:Lazy` opens the plugin UI and `:Lazy sync` updates directly.
+`:Mason` shows installed language tooling.
 
 ## Language servers
 
-The configuration enables these servers when their executables are available:
+Mason installs these servers automatically in Neovim's data directory:
 
-| Language | nvim-lspconfig name | Expected executable |
+| Language | nvim-lspconfig name | Mason package |
 | --- | --- | --- |
-| Nix | `nil_ls` | `nil` |
+| Bash | `bashls` | `bash-language-server` |
 | Lua | `lua_ls` | `lua-language-server` |
 | TypeScript/JavaScript | `ts_ls` | `typescript-language-server` |
-| Python | `pyright` | `pyright-langserver` |
+| Python | `pyright` | `pyright` |
 | Rust | `rust_analyzer` | `rust-analyzer` |
 
-Language servers are intentionally installed by the host package manager, not
-by Neovim. This keeps the editor config predictable on macOS, NixOS, and small
-remote machines. Use `:checkhealth vim.lsp` to see what is available.
+The config exposes FNM's default Node runtime to Neovim even when it starts
+outside an interactive shell. Use `:checkhealth mason` to inspect installation
+dependencies and `:checkhealth vim.lsp` to inspect attached servers.
+Nix files retain Tree-sitter highlighting, but no Nix toolchain or language
+server is installed.
+
+## Finding files and text
+
+[FFF](https://github.com/dmtrKovalenko/fff) handles file and content search with
+a persistent, frecency-aware index. Neovim's built-in `:buffer` and `:help`
+completion handle the less common buffer and documentation paths, avoiding a
+second picker plugin. In FFF live grep, `Shift-Tab` cycles plain, regex, and
+fuzzy modes; `git:modified` narrows results to changed files.
 
 ## Keymaps
 
@@ -60,8 +72,9 @@ The leader key is Space.
 | --- | --- |
 | `<leader>ff` | Find files |
 | `<leader>fg` | Live grep |
-| `<leader>fb` | Open buffers |
-| `<leader>fh` | Help tags |
+| `<leader>fw` | Search word under cursor or visual selection |
+| `<leader>fb` | List buffers, then prompt for one |
+| `<leader>fh` | Prompt for a help topic |
 | `gd` | Go to definition |
 | `K` | Hover documentation |
 | `gr` | Find references |
