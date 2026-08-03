@@ -31,12 +31,11 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     lazy = false,
     build = ":TSUpdate",
-    opts = {
-      sync_install = true,
-      ensure_installed = {
+    config = function()
+      require("nvim-treesitter").install({
         "bash",
         "javascript",
         "lua",
@@ -45,12 +44,14 @@ return {
         "rust",
         "tsx",
         "typescript",
-      },
-      highlight = { enable = true },
-      indent = { enable = true },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+      }):wait(300000)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "javascript", "lua", "nix", "python", "rust", "sh", "typescript", "typescriptreact" },
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+        end,
+      })
     end,
   },
 

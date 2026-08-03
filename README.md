@@ -8,9 +8,10 @@ defaults to Ayu Light.
 
 Requirements:
 
-- Neovim 0.11.7 or newer
+- Neovim 0.12.0 or newer
 - Git
 - A C compiler for Tree-sitter parsers
+- `tree-sitter-cli` 0.26.1 or newer
 - `curl`, `unzip`, `tar`, and `gzip` for portable tool installation
 - Node.js for the TypeScript and Python servers (an FNM default is detected)
 
