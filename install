@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+source_dir="$repo_dir/nvim"
+target="$config_home/nvim"
+
+mkdir -p "$config_home"
+
+if [ -L "$target" ] && [ "$(readlink "$target")" = "$source_dir" ]; then
+  printf 'Neovim config is already linked to %s\n' "$source_dir"
+  exit 0
+fi
+
+if [ -e "$target" ] || [ -L "$target" ]; then
+  backup="$target.backup.$(date +%Y%m%d%H%M%S)"
+  mv "$target" "$backup"
+  printf 'Moved existing Neovim config to %s\n' "$backup"
+fi
+
+ln -s "$source_dir" "$target"
+printf 'Linked %s -> %s\n' "$target" "$source_dir"
+printf 'Start Neovim once to install plugins.\n'

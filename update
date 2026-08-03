@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
+
+if git -C "$repo_dir" remote get-url origin >/dev/null 2>&1; then
+  git -C "$repo_dir" pull --ff-only
+else
+  printf 'No origin remote configured; skipping git pull.\n'
+fi
+
+nvim --headless "+Lazy! sync" +qa
